@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuthStore } from "@/store/auth-store";
 import { toast } from "sonner";
+import { track } from "@/lib/pendo";
 
 const schema = z.object({
   firstName: z.string().min(1),
@@ -34,6 +35,7 @@ export default function ProfileSettingsPage() {
 
   const onSubmit = (data: FormData) => {
     updateProfile(data);
+    track("profile_updated", { first_name: data.firstName, last_name: data.lastName, email: data.email });
     toast.success("Profile updated");
     if (typeof window !== "undefined") {
       window.pendo?.updateOptions?.({ visitor: { email: data.email, first_name: data.firstName, last_name: data.lastName } });
