@@ -89,3 +89,23 @@ export function track(event: PendoEventName, properties: Record<string, unknown>
   if (p && typeof p.track === "function") p.track(event, properties);
   if (process.env.NODE_ENV !== "production") console.debug("[pendo.track]", event, properties);
 }
+
+export type TrackAgentEventType = "prompt" | "agent_response" | "user_reaction";
+
+export interface TrackAgentMetadata {
+  agentId: string;
+  conversationId: string;
+  messageId: string;
+  content: string;
+  modelUsed?: string;
+  suggestedPrompt?: boolean;
+  toolsUsed?: string[];
+  fileUploaded?: boolean;
+}
+
+export function trackAgent(eventType: TrackAgentEventType, metadata: TrackAgentMetadata) {
+  if (typeof window === "undefined") return;
+  const p = (window as any).pendo;
+  if (p && typeof p.trackAgent === "function") p.trackAgent(eventType, metadata);
+  if (process.env.NODE_ENV !== "production") console.debug("[pendo.trackAgent]", eventType, metadata);
+}

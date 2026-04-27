@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Send, ThumbsUp, ThumbsDown, Bot, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { track } from "@/lib/pendo";
+import { track, trackAgent } from "@/lib/pendo";
 
 interface Message {
   id: string;
@@ -26,6 +26,9 @@ export function AIAssistantChatPanel() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const conversationIdRef = useRef<string>(crypto.randomUUID());
+
+  const AGENT_ID = "57gEEyoG93m_EZ3YcnqJRRVMTwc";
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -41,6 +44,14 @@ export function AIAssistantChatPanel() {
     // PENDO: AI assistant query sent
     track("ai_assistant_query_sent", { message_length: userMsg.content.length });
 
+    trackAgent("prompt", {
+      agentId: AGENT_ID,
+      conversationId: conversationIdRef.current,
+      messageId: userMsg.id,
+      content: userMsg.content,
+      suggestedPrompt: false,
+    });
+
     try {
       const res = await fetch("/api/agent/chat", {
         method: "POST",
@@ -54,6 +65,13 @@ export function AIAssistantChatPanel() {
 
       // PENDO: AI assistant response received
       track("ai_assistant_response_received", { response_length: data.message.length });
+
+      trackAgent("agent_response", {
+        agentId: AGENT_ID,
+        conversationId: conversationIdRef.current,
+        messageId: assistantMsg.id,
+        content: data.message,
+      });
     } catch (e) {
       setMessages((prev) => [...prev, { id: `err${Date.now()}`, role: "assistant", content: "Sorry, I ran into an issue. Please try again." }]);
     } finally {
@@ -64,6 +82,13 @@ export function AIAssistantChatPanel() {
   const handleFeedback = (messageId: string, positive: boolean) => {
     // PENDO: AI assistant feedback given
     track("ai_assistant_feedback_given", { message_id: messageId, positive });
+
+    trackAgent("user_reaction", {
+      agentId: AGENT_ID,
+      conversationId: conversationIdRef.current,
+      messageId,
+      content: positive ? "positive" : "negative",
+    });
   };
 
   return (
