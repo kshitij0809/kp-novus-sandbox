@@ -43,7 +43,7 @@ export function CreateProjectDialog({ open, onClose }: Props) {
       labelIds: [],
     });
     // PENDO: project created funnel step 2
-    track("project_created", { project_id: project.id, name: project.name });
+    track("project_created", { project_id: project.id, name: project.name, source: "dialog" });
     toast.success(`Project "${project.name}" created`);
     reset();
     onClose();

@@ -25,7 +25,7 @@ export default function OnboardingInvitePage() {
 
   const handleSkip = () => {
     // PENDO: onboarding skipped on invite step
-    track("onboarding_skipped", { step: "invite" });
+    track("onboarding_skipped", { step: "invite", step_number: 5 });
     finishOnboarding(0);
   };
 

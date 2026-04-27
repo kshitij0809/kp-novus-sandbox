@@ -55,7 +55,10 @@ export default function AccountSettingsPage() {
               </SelectContent>
             </Select>
           </div>
-          <Button className="bg-indigo-600 hover:bg-indigo-700" onClick={() => toast.success("Account settings saved")}>
+          <Button className="bg-indigo-600 hover:bg-indigo-700" onClick={() => {
+            track("account_settings_saved");
+            toast.success("Account settings saved");
+          }}>
             Save changes
           </Button>
         </CardContent>
