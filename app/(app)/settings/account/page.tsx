@@ -55,7 +55,11 @@ export default function AccountSettingsPage() {
               </SelectContent>
             </Select>
           </div>
-          <Button className="bg-indigo-600 hover:bg-indigo-700" onClick={() => toast.success("Account settings saved")}>
+          <Button className="bg-indigo-600 hover:bg-indigo-700" onClick={() => {
+            // PENDO: account settings saved
+            track("account_settings_saved");
+            toast.success("Account settings saved");
+          }}>
             Save changes
           </Button>
         </CardContent>
@@ -67,7 +71,11 @@ export default function AccountSettingsPage() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-3">Once you delete your account, all data will be permanently removed.</p>
-          <Button variant="destructive" onClick={() => toast.error("Account deletion is disabled in demo mode")}>
+          <Button variant="destructive" onClick={() => {
+            // PENDO: account deletion attempted
+            track("account_deletion_attempted");
+            toast.error("Account deletion is disabled in demo mode");
+          }}>
             Delete account
           </Button>
         </CardContent>
