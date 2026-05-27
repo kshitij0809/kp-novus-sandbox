@@ -57,6 +57,7 @@ export default function ReportsPage() {
         </div>
         <div className="flex items-center gap-2">
           <Select value={reportRange} onValueChange={(v) => {
+            if (!v) return;
             setReportRange(v);
             // PENDO: report filter changed
             track("report_filter_changed", { filter: "range", report: "overview", value: v });
