@@ -3,12 +3,6 @@
 import { useEffect } from "react";
 import { useAuthStore } from "@/store/auth-store";
 
-declare global {
-  interface Window {
-    pendo?: any;
-  }
-}
-
 export function PendoIdentify() {
   const { user, account, authenticated } = useAuthStore();
 
