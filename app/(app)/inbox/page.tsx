@@ -38,9 +38,14 @@ export default function InboxPage() {
         </div>
         <Select value={filter} onValueChange={(v) => {
           if (v) {
+            if (v === "all" && filter !== "all") {
+              // PENDO: filter cleared on inbox
+              track("filter_cleared", { source: "inbox", previous_filter: filter });
+            } else {
+              // PENDO: filter applied on inbox
+              track("filter_applied", { source: "inbox", filter: v });
+            }
             setFilter(v);
-            // PENDO: filter applied on inbox
-            track("filter_applied", { source: "inbox", filter: v });
           }
         }}>
           <SelectTrigger className="w-32">
