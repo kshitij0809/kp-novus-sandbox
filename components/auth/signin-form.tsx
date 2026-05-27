@@ -31,11 +31,16 @@ export function SigninForm() {
   const onSubmit = async (data: FormData) => {
     // PENDO: signin attempted
     track("signin_attempted", { email: data.email });
-    await new Promise((r) => setTimeout(r, 400));
-    // PENDO: signin succeeded
-    track("signin_succeeded", { email: data.email });
-    signIn(data.email);
-    router.push("/dashboard");
+    try {
+      await new Promise((r) => setTimeout(r, 400));
+      // PENDO: signin succeeded
+      track("signin_succeeded", { email: data.email });
+      signIn(data.email);
+      router.push("/dashboard");
+    } catch (err: any) {
+      // PENDO: signin failed
+      track("signin_failed", { email: data.email, reason: err?.message ?? "unknown" });
+    }
   };
 
   return (

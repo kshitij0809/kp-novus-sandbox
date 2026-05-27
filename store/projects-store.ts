@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { Project } from "@/types";
 import * as api from "@/lib/mock-api";
+import { track } from "@/lib/pendo";
 
 interface ProjectsState {
   projects: Project[];
@@ -33,7 +34,10 @@ export const useProjectsStore = create<ProjectsState>((set, get) => ({
   },
 
   deleteProject: async (id) => {
+    const project = get().projects.find((p) => p.id === id);
     await api.deleteProject(id);
     set({ projects: get().projects.filter((p) => p.id !== id) });
+    // PENDO: project deleted
+    track("project_deleted", { project_id: id, project_name: project?.name });
   },
 }));

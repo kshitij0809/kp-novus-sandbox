@@ -19,9 +19,29 @@ interface Props {
   projectId: string;
 }
 
+type SortField = "title" | "status" | "priority" | "dueDate";
+type SortDir = "asc" | "desc";
+
 export function TaskListView({ tasks, projectId }: Props) {
   const { updateTask } = useTasksStore();
   const [selected, setSelected] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState<SortField>("title");
+  const [sortDir, setSortDir] = useState<SortDir>("asc");
+
+  const handleSort = (field: SortField) => {
+    const newDir = sortBy === field && sortDir === "asc" ? "desc" : "asc";
+    setSortBy(field);
+    setSortDir(newDir);
+    // PENDO: sort changed
+    track("sort_changed", { sort_by: field, direction: newDir, source: "task_list" });
+  };
+
+  const sortedTasks = [...tasks].sort((a, b) => {
+    const mul = sortDir === "asc" ? 1 : -1;
+    const va = (a as any)[sortBy] ?? "";
+    const vb = (b as any)[sortBy] ?? "";
+    return va < vb ? -mul : va > vb ? mul : 0;
+  });
 
   const toggleSelect = (id: string) => {
     if (selected.includes(id)) {
@@ -67,15 +87,15 @@ export function TaskListView({ tasks, projectId }: Props) {
           <thead>
             <tr className="bg-muted/50 border-b border-border">
               <th className="w-8 px-3 py-2.5" />
-              <th className="text-left px-3 py-2.5 font-medium text-muted-foreground">Task</th>
-              <th className="text-left px-3 py-2.5 font-medium text-muted-foreground w-28">Status</th>
-              <th className="text-left px-3 py-2.5 font-medium text-muted-foreground w-20">Priority</th>
+              <th className="text-left px-3 py-2.5 font-medium text-muted-foreground cursor-pointer select-none" onClick={() => handleSort("title")}>Task{sortBy === "title" ? (sortDir === "asc" ? " ↑" : " ↓") : ""}</th>
+              <th className="text-left px-3 py-2.5 font-medium text-muted-foreground w-28 cursor-pointer select-none" onClick={() => handleSort("status")}>Status{sortBy === "status" ? (sortDir === "asc" ? " ↑" : " ↓") : ""}</th>
+              <th className="text-left px-3 py-2.5 font-medium text-muted-foreground w-20 cursor-pointer select-none" onClick={() => handleSort("priority")}>Priority{sortBy === "priority" ? (sortDir === "asc" ? " ↑" : " ↓") : ""}</th>
               <th className="text-left px-3 py-2.5 font-medium text-muted-foreground w-28">Assignee</th>
               <th className="text-left px-3 py-2.5 font-medium text-muted-foreground w-24">Due date</th>
             </tr>
           </thead>
           <tbody>
-            {tasks.map((task) => {
+            {sortedTasks.map((task) => {
               const assignee = task.assigneeId ? SEED_USERS.find((u) => u.id === task.assigneeId) : null;
               return (
                 <tr key={task.id} className="border-b border-border/50 hover:bg-accent/50 transition-colors last:border-0">

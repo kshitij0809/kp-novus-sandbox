@@ -50,6 +50,14 @@ export default function BillingSettingsPage() {
                 }}>
                 Cancel plan
               </Button>
+              <Button variant="outline" size="sm"
+                onClick={() => {
+                  // PENDO: subscription resumed
+                  track("subscription_resumed", { plan: user?.plan });
+                  toast.success("Subscription resumed (demo)");
+                }}>
+                Resume plan
+              </Button>
             </div>
           </div>
         </CardContent>

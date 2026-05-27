@@ -9,6 +9,7 @@ import { NewTaskButton } from "@/components/tasks/new-task-button";
 import { ShareLinkButton } from "@/components/shared/share-link-button";
 import { useProjectsStore } from "@/store/projects-store";
 import { useTasksStore } from "@/store/tasks-store";
+import { track } from "@/lib/pendo";
 
 interface Props {
   params: Promise<{ projectId: string }>;
@@ -16,9 +17,17 @@ interface Props {
 
 export default function ProjectKanbanPage({ params }: Props) {
   const { projectId } = use(params);
-  const { projects } = useProjectsStore();
+  const { projects, updateProject } = useProjectsStore();
   const { tasks, loadForProject } = useTasksStore();
   const project = projects.find((p) => p.id === projectId);
+
+  const handleRename = async (newName: string) => {
+    if (!project || newName === project.name || !newName.trim()) return;
+    const oldName = project.name;
+    await updateProject(project.id, { name: newName.trim() });
+    // PENDO: project renamed
+    track("project_renamed", { project_id: project.id, old_name: oldName, new_name: newName.trim() });
+  };
 
   useEffect(() => {
     if (project) document.title = `TaskPilot — ${project.name}`;
@@ -32,7 +41,7 @@ export default function ProjectKanbanPage({ params }: Props) {
       {/* Header */}
       <div className="border-b border-border px-6 py-3 flex items-center justify-between flex-shrink-0">
         <div>
-          <h1 className="font-bold text-lg">{project?.name}</h1>
+          <h1 className="font-bold text-lg" contentEditable suppressContentEditableWarning onBlur={(e) => handleRename(e.currentTarget.textContent ?? "")}>{project?.name}</h1>
           <p className="text-muted-foreground text-xs">{project?.description}</p>
         </div>
         <div className="flex items-center gap-2">

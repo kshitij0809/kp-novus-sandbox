@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ExportButton } from "@/components/shared/export-button";
 import { useTasksStore } from "@/store/tasks-store";
 import { GOALS } from "@/lib/goals";
 import { track } from "@/lib/pendo";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Legend, Cell,
@@ -33,6 +34,7 @@ const velocityData = generateVelocityData();
 
 export default function ReportsPage() {
   const { tasks, load } = useTasksStore();
+  const [reportRange, setReportRange] = useState("30d");
 
   useEffect(() => {
     document.title = "TaskPilot — Reports";
@@ -53,7 +55,23 @@ export default function ReportsPage() {
           <h1 className="text-2xl font-bold">Reports</h1>
           <p className="text-muted-foreground text-sm mt-0.5">Team performance and project health</p>
         </div>
-        <ExportButton label="Export report" eventName="report_exported" />
+        <div className="flex items-center gap-2">
+          <Select value={reportRange} onValueChange={(v) => {
+            setReportRange(v);
+            // PENDO: report filter changed
+            track("report_filter_changed", { filter: "range", report: "overview", value: v });
+          }}>
+            <SelectTrigger className="w-28 h-8 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="7d">Last 7 days</SelectItem>
+              <SelectItem value="30d">Last 30 days</SelectItem>
+              <SelectItem value="90d">Last 90 days</SelectItem>
+            </SelectContent>
+          </Select>
+          <ExportButton label="Export report" eventName="report_exported" />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -12,7 +12,7 @@ import { User, Role } from "@/types";
 import { getUsers } from "@/lib/mock-api";
 import { track } from "@/lib/pendo";
 import { toast } from "sonner";
-import { UserPlus } from "lucide-react";
+import { UserPlus, Trash2 } from "lucide-react";
 
 export default function TeamPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -29,6 +29,13 @@ export default function TeamPage() {
     // PENDO: team member role changed
     track("team_member_role_changed", { user_id: userId, new_role: role });
     toast.success("Role updated");
+  };
+
+  const handleRemoveMember = (member: User) => {
+    setUsers(users.filter((u) => u.id !== member.id));
+    // PENDO: team member removed
+    track("team_member_removed", { user_id: member.id, role: member.role });
+    toast.success(`${member.firstName} ${member.lastName} removed from team`);
   };
 
   const handleInvite = () => {
@@ -61,6 +68,7 @@ export default function TeamPage() {
               <th className="text-left px-4 py-3 font-medium text-muted-foreground">Email</th>
               <th className="text-left px-4 py-3 font-medium text-muted-foreground">Plan</th>
               <th className="text-left px-4 py-3 font-medium text-muted-foreground w-36">Role</th>
+              <th className="px-4 py-3 w-12" />
             </tr>
           </thead>
           <tbody>
@@ -91,6 +99,11 @@ export default function TeamPage() {
                       <SelectItem value="member">Member</SelectItem>
                     </SelectContent>
                   </Select>
+                </td>
+                <td className="px-4 py-3">
+                  <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={() => handleRemoveMember(u)}>
+                    <Trash2 size={14} />
+                  </Button>
                 </td>
               </tr>
             ))}
