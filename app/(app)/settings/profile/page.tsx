@@ -36,7 +36,7 @@ export default function ProfileSettingsPage() {
     updateProfile(data);
     toast.success("Profile updated");
     if (typeof window !== "undefined") {
-      window.pendo?.updateOptions?.({ visitor: { email: data.email, first_name: data.firstName, last_name: data.lastName } });
+      (window as any).pendo?.updateOptions?.({ visitor: { email: data.email, first_name: data.firstName, last_name: data.lastName } });
     }
   };
 
