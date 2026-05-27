@@ -15,7 +15,7 @@ declare global {
   }
 }
 
-const AGENT_ID = "myuCDl_FOKPPron5JTAVlZxltlw";
+const AGENT_ID = "Wgfk3iCMdhGGVp7Pspx6vKJenHw";
 
 interface Message {
   id: string;
