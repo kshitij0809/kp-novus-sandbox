@@ -6,15 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { track } from "@/lib/pendo";
 
-declare global {
-  interface Window {
-    pendo?: {
-      track: (event: string, properties?: Record<string, unknown>) => void;
-      trackAgent: (eventType: string, metadata: object) => void;
-    };
-  }
-}
-
 const AGENT_ID = "Wgfk3iCMdhGGVp7Pspx6vKJenHw";
 
 interface Message {
