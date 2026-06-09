@@ -81,7 +81,10 @@ export type PendoEventName =
   // Flags
   | "feature_flag_evaluated"
   // Landing
-  | "landing_cta_clicked";
+  | "landing_cta_clicked"
+  // Profile & Account
+  | "profile_updated"
+  | "account_settings_saved";
 
 export function track(event: PendoEventName, properties: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;

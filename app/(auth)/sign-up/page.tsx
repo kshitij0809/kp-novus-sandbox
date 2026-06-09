@@ -9,7 +9,12 @@ export default function SignUpPage() {
   useEffect(() => {
     document.title = "TaskPilot — Create your account";
     // PENDO: signup page viewed funnel step 1
-    track("signup_page_viewed");
+    const params = new URLSearchParams(window.location.search);
+    track("signup_page_viewed", {
+      referrer: document.referrer || undefined,
+      utm_source: params.get("utm_source") || undefined,
+      utm_campaign: params.get("utm_campaign") || undefined,
+    });
   }, []);
 
   return (

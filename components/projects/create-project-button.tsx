@@ -11,7 +11,7 @@ export function CreateProjectButton() {
 
   const handleOpen = () => {
     // PENDO: project create dialog opened funnel step 1
-    track("project_create_dialog_opened");
+    track("project_create_dialog_opened", { source: "button" });
     setOpen(true);
   };
 

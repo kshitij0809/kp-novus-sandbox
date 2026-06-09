@@ -26,6 +26,7 @@ export function SignupForm() {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
@@ -59,7 +60,9 @@ export function SignupForm() {
           className="mt-1"
           onBlur={() => {
             // PENDO: signup email entered funnel step 2
-            track("signup_email_entered");
+            const email = getValues("email");
+            const domain = email?.includes("@") ? email.split("@")[1] : undefined;
+            track("signup_email_entered", { email_domain: domain });
           }}
         />
         {errors.email && <p className="text-destructive text-xs mt-1">{errors.email.message}</p>}

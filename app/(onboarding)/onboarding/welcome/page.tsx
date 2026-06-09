@@ -19,7 +19,7 @@ export default function OnboardingWelcomePage() {
   useEffect(() => {
     document.title = "TaskPilot — Welcome";
     // PENDO: onboarding started + step viewed
-    track("onboarding_started");
+    track("onboarding_started", { source: "signup" });
     track("onboarding_step_viewed", { step: "welcome", step_number: 1 });
   }, []);
 
