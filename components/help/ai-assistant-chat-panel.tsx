@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { track } from "@/lib/pendo";
 
-const AGENT_ID = "Jwo36-eDuJLWBlRC9neN2iUIii4";
+const AGENT_ID = "myuCDl_FOKPPron5JTAVlZxltlw";
 
 interface Message {
   id: string;
@@ -36,7 +36,7 @@ export function AIAssistantChatPanel() {
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
-    const userMsg: Message = { id: `m${Date.now()}`, role: "user", content: input };
+    const userMsg: Message = { id: crypto.randomUUID(), role: "user", content: input };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setLoading(true);
@@ -61,7 +61,7 @@ export function AIAssistantChatPanel() {
       });
       const data = await res.json();
 
-      const assistantMsg: Message = { id: `m${Date.now() + 1}`, role: "assistant", content: data.message };
+      const assistantMsg: Message = { id: crypto.randomUUID(), role: "assistant", content: data.message };
       setMessages((prev) => [...prev, assistantMsg]);
 
       // PENDO: AI assistant response received
@@ -74,8 +74,8 @@ export function AIAssistantChatPanel() {
         messageId: assistantMsg.id,
         content: assistantMsg.content,
       });
-    } catch (e) {
-      setMessages((prev) => [...prev, { id: `err${Date.now()}`, role: "assistant", content: "Sorry, I ran into an issue. Please try again." }]);
+    } catch {
+      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "Sorry, I ran into an issue. Please try again." }]);
     } finally {
       setLoading(false);
     }
