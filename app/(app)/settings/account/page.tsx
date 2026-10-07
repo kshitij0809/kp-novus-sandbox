@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +10,9 @@ import { toast } from "sonner";
 import { track } from "@/lib/pendo";
 
 export default function AccountSettingsPage() {
+  const [companyName, setCompanyName] = useState("Acme Corp");
+  const [industry, setIndustry] = useState("software");
+
   useEffect(() => {
     document.title = "TaskPilot — Account settings";
   }, []);
@@ -23,11 +26,11 @@ export default function AccountSettingsPage() {
         <CardContent className="space-y-4">
           <div>
             <Label>Company name</Label>
-            <Input defaultValue="Acme Corp" className="mt-1" />
+            <Input value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="mt-1" />
           </div>
           <div>
             <Label>Industry</Label>
-            <Select defaultValue="software">
+            <Select value={industry} onValueChange={setIndustry}>
               <SelectTrigger className="mt-1">
                 <SelectValue />
               </SelectTrigger>
@@ -55,7 +58,11 @@ export default function AccountSettingsPage() {
               </SelectContent>
             </Select>
           </div>
-          <Button className="bg-indigo-600 hover:bg-indigo-700" onClick={() => toast.success("Account settings saved")}>
+          <Button className="bg-indigo-600 hover:bg-indigo-700" onClick={() => {
+            // PENDO: account settings saved
+            track("account_settings_saved", { company_name: companyName, industry });
+            toast.success("Account settings saved");
+          }}>
             Save changes
           </Button>
         </CardContent>

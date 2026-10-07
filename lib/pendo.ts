@@ -65,6 +65,8 @@ export type PendoEventName =
   | "theme_changed"
   | "integration_connected"
   | "integration_disconnected"
+  | "profile_updated"
+  | "account_settings_saved"
   // Agent
   | "ai_assistant_opened"
   | "ai_assistant_query_sent"
