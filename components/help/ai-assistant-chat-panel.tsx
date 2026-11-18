@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { track } from "@/lib/pendo";
 
-const AGENT_ID = "myuCDl_FOKPPron5JTAVlZxltlw";
+const AGENT_ID = "AK81HV8rvzFb_ibGhGpB1gJICjA";
 
 interface Message {
   id: string;
